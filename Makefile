@@ -13,7 +13,10 @@ ifeq (,$(wildcard ./results.tar.gz))
 	source .venv/bin/activate && gdown 1-gDjaSjwUd6EnQj8Gq5WNi0eUFTVgKbC
 	tar -xzvf results.tar.gz
 endif
-	docker build -t density:latest .
+	docker build -t registry.webis.de/code-research/conversational-search/multi-turn-system-prompts:density-latest .
+
+push:
+	docker push registry.webis.de/code-research/conversational-search/multi-turn-system-prompts:density-latest
 
 test:
 	docker run -v "$(shell pwd)/data":/app/data --gpus all density:latest

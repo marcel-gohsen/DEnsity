@@ -25,16 +25,19 @@ def main(input_file, output_file):
         data = json.load(in_file)
 
     for conversation in data:
-        messages = [m["content"] for m in conversation["predicted"] if m["role"] != "system"]
+        utterances = [u["content"] for u in conversation["messages"]["predicted"] if u["role"] in {"user", "assistant"}]
 
         if "evaluation" not in conversation:
-            conversation["evaluation"] = {}
+            conversation["evaluation"] = {"predicted": {}}
 
-        score = evaluator.evaluate(messages, is_turn_level=True)
-        conversation["evaluation"]["density_last"] = float(score)
+        if "predicted" not in conversation["evaluation"]:
+            conversation["evaluation"]["predicted"] = {}
 
-        score = evaluator.evaluate(messages, is_turn_level=False)
-        conversation["evaluation"]["density_avg"] = float(score)
+        score = evaluator.evaluate(utterances, is_turn_level=True)
+        conversation["evaluation"]["predicted"]["density_last"] = float(score)
+
+        score = evaluator.evaluate(utterances, is_turn_level=False)
+        conversation["evaluation"]["predicted"]["density_avg"] = float(score)
 
     with open(output_file, "w+") as out_file:
         json.dump(data, out_file, indent=4)

@@ -14,7 +14,9 @@ COPY scripts /app/scripts
 COPY utils /app/utils
 COPY evaluate_conversations.py /app/
 
-ENTRYPOINT ["python3", "evaluate_conversations.py", "-f", "data/input.json", "-o", "data/output.json"]
+ENV INPUT_FILE="data/input.json" OUTPUT_FILE="data/output.json"
+
+ENTRYPOINT python3 evaluate_conversations.py -f ${INPUT_FILE} -o ${OUTPUT_FILE}
 
 
 
